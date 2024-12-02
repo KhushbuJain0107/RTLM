@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realtime location tracker</title>
+
+    <!-- leaflet css  -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<header>
+    <div class="containers"> 
+       <nav class="navbar links">
+
+          <div class="logo"><img src="./img/logo.png" alt="...loading"></div>
+
+          <ul class="nav-menu">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="#features">Features</a>
+            <a href="safety.html">Safety Resources</a>
+            <a href="#contactus">Contact Us</a>
+            <div id="renderLoginState">
+
+            </div>
+            <!-- <a href="sign.html" target="_blank"><button class="secondary-btn">Sign In</button></a> -->
+            <a href="#"><button class="primary-btn">Alert</button></a>
+          </ul>
+          <div class="hamburger">
+             <span class="bar"></span>
+             <span class="bar"></span>
+             <span class="bar"></span>
+          </div>
+       </nav>
+    </div>
+ </header> 
+
+
+<body>
+    <div id="map"></div>
+</body>
+
+
+ <!-- Footer -->
+
+ <div class="footer">
+    <div class="footer-logo">
+        <img src="./img/logo.png" alt="">
+        <h5>WomiShield</h5>
+        <p>WomiShield is a dedicated platform for women's safety, empowering users with real-time tools and resources for secure and confident living. Join us in building a safer tomorrow.</p>
+        <div class="media">
+            <img src="./img/instagram.png" alt="loading...">
+            <img src="./img/facebook.png" alt="loading...">
+            <img src="./img/twitter.png" alt="loading...">
+            <img src="./img/linkedin.png" alt="loading...">
+        </div>
+    </div>
+    <div class="footer-links">
+    <div class="footer-link">
+        <p>Quick Navigate </p>
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="#features">Features</a>
+        <a href="safety.html">Safety Resources</a>
+        <a href="#contactus">Contact Us</a>
+    </div>
+
+    <div class="footer-link">
+        <p>Useful Links</p>
+        <a href="index.html">FAQs</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Emergency Alert</a>
+        <a href="sign.html">SignIn</a>
+    </div>
+
+    <div class="footer-link">
+        <p>Important Terms</p>
+        <a href="#">Safe Zone</a>
+        <a href="#">Alert</a>
+        <a href="#">Empowerment</a>
+        <a href="#">Awareness</a>
+        <a href="#">Safeguard</a>
+    </div>
+</div>
+</div>
+
+<!-- Sub Footer -->
+
+<div class="sub-footer text">   
+<a href="#">CopyRight &#169; 2024</a>    
+<a href="#">All rights reserved</a>
+<a href="#">Terms & Conditions</a>
+<a href="#">Privacy Policy</a>
+</div>
+
+
+
+<script src="script.js"></script>
+</html>
+
+<!-- leaflet js  -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    // Map initialization 
+    var map = L.map('map').setView([14.0860746, 100.608406], 6);
+
+    //osm layer
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+    osm.addTo(map);
+
+    if(!navigator.geolocation) {
+        console.log("Your browser doesn't support geolocation feature!")
+    } else {
+        setInterval(() => {
+            navigator.geolocation.getCurrentPosition(getPosition)
+        }, 5000);
+    }
+
+    var marker, circle;
+
+    function getPosition(position){
+        // console.log(position)
+        var lat = position.coords.latitude
+        var long = position.coords.longitude
+        var accuracy = position.coords.accuracy
+
+        if(marker) {
+            map.removeLayer(marker)
+        }
+
+        if(circle) {
+            map.removeLayer(circle)
+        }
+
+        marker = L.marker([lat, long])
+        circle = L.circle([lat, long], {radius: accuracy})
+
+        var featureGroup = L.featureGroup([marker, circle]).addTo(map)
+
+        map.fitBounds(featureGroup.getBounds())
+
+        console.log("Your coordinate is: Lat: "+ lat +" Long: "+ long+ " Accuracy: "+ accuracy)
+    }
+
+</script>
